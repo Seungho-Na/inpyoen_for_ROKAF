@@ -3,9 +3,9 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.keys import Keys
 from bs4 import BeautifulSoup
 from datetime import datetime
-import requests
 import time
-
+import requests
+#import time
 URL = '##인편 보내려는 게시판 url##'
 options = Options()
 options.add_argument('headless')
@@ -16,6 +16,7 @@ options.add_argument('--ignore-certificate-errors')
 driver2 = webdriver.Chrome(options=options)
 driver2.get('http://www.google.com/')
 print(driver2.title)
+
 element = driver2.find_element_by_name('q')
 element.send_keys("뉴스")
 element.submit()
@@ -43,6 +44,7 @@ for link in links:
         break
 link_divs = driver2.find_elements_by_tag_name('g-card')
 links = [div.find_elements_by_tag_name('a') for div in link_divs]
+
 urlsAndtext = []
 for link in links:
     if len(link) > 1:
@@ -53,6 +55,9 @@ for link in links:
 
     if link_text != '':
         urlsAndtext.append((href, link_text))
+#print(urlsAndtext)
+driver2.quit()
+
 contents = ''
 
 for i in range(len(urlsAndtext)):
@@ -71,40 +76,46 @@ for i in range(len(urlsAndtext)):
         contents += urlsAndtext[i][1]+'전\n' + tmp
     except:
         continue
-        
+#print(contents)
+
 N = int(len(contents)/1150) + 1 
-#print(N)
+print(N)
+
+pwd = "0919"
 dateText = datetime.today().strftime("%Y년 %m월 %d일자 기사")
 
-#구글 뉴스탭 지난 1일 처음 페이지 기사 출력
-# N개 만큼 게시글이 등록됨 
+notFoundIndex = []
 for i in range(N):
     driver = webdriver.Chrome(options=options)
     driver.get(URL)
     print(driver.title)
     #print(driver.find_element_by_class_name("wizbtn.large.ngray.normal.btnr"))
     driver.find_element_by_class_name("wizbtn.large.ngray.normal.btnr").click()
-    #print(driver.page_source) ㅇㅇ 잘됨
+    #print(driver.page_source)
 
     driver.find_element_by_class_name("normal").click()
     driver.switch_to.window(driver.window_handles[1])
     #print(driver.page_source) 
     try:
-        searchInput = driver.find_element_by_id('keyword')
-    except:
         searchInput = driver.find_element_by_class_name('popSearchInput')
+    except:
+        try:
+            searchInput = driver.find_element_by_id('keyword')
+        except:
+            print('searchInput 못찾음 ㅠ')
+            notFoundIndex.append(i)
+            continue
     
-    #driver.find_element_by_class_name('popSearchInput')
     #print(searchInput)
-    
-    #이 부분은 자신이 직접 해봐야함 본인의 주소를 입력해서 검색한 결과창에서
-    #주소를 찾아서 클릭해야됨(사실 주소는 그렇게 의미는 없는 듯?)
-    searchInput.send_keys('##본인의 주소##')
+    searchInput.send_keys('##본인집주소##')
     searchInput.send_keys(Keys.RETURN)
+
+
     driver.find_element_by_id('roadAddrTd1').click()
+
     detailInput = driver.find_element_by_id('rtAddrDetail')
     detailInput.click()
-    detailInput.send_keys('##상세주소##')
+    detailInput.send_keys('##세부주소##')
     #print(driver.page_source)
 
     links = driver.find_elements_by_tag_name('a')
@@ -115,21 +126,83 @@ for i in range(N):
             break
     driver.switch_to.window(driver.window_handles[0])
     #print(driver.page_source)
-    problem = ''
-    title = ''+dateText
-    innerText = ''
+    title = dateText
+    innerText = '{} {}번째 페이지 입니다\n'.format(dateText, i+1)
     if i==N-1:
-        innerText = contents[i*1150:]
+        innerText += contents[i*1150:]
     else:
-        innerText = contents[i*1150:(i+1)*1150]
+        innerText += contents[i*1150:(i+1)*1150]
     driver.find_element_by_id("senderName").send_keys('##본인의 이름##')
-    driver.find_element_by_id("relationship").send_keys('##지인##')
+    driver.find_element_by_id("relationship").send_keys('##관계##')
     driver.find_element_by_id("title").send_keys(dateText)
     driver.find_element_by_id("contents").send_keys(innerText)
-    driver.find_element_by_id("password").send_keys('1111')
+    driver.find_element_by_id("password").send_keys(pwd)
     #print(driver.find_element_by_class_name('submit'))
     submit = driver.find_element_by_class_name('submit')
     submit.click()
-    driver.quit()
-    time.sleep(3)
+    time.sleep(5)
     #print(driver.page_source) 
+    driver.quit()
+    
+while len(notFoundIndex) > 0:
+    for index in notFoundIndex:
+        driver = webdriver.Chrome(options=options)
+        driver.get(URL)
+        print(driver.title)
+        #print(driver.find_element_by_class_name("wizbtn.large.ngray.normal.btnr"))
+        driver.find_element_by_class_name("wizbtn.large.ngray.normal.btnr").click()
+        #print(driver.page_source)
+
+        driver.find_element_by_class_name("normal").click()
+        driver.switch_to.window(driver.window_handles[1])
+        #print(driver.page_source) 
+        try:
+            searchInput = driver.find_element_by_class_name('popSearchInput')
+        except:
+            try:
+                searchInput = driver.find_element_by_id('keyword')
+            except:
+                print('또 못찾음 ㅠㅠ')
+                continue
+        #print('전:', notFoundIndex)
+        notFoundIndex.remove(index)
+        #print('후:', notFoundIndex)
+
+        #print(searchInput)
+        searchInput.send_keys('##본인집주소##')
+        searchInput.send_keys(Keys.RETURN)
+
+
+        driver.find_element_by_id('roadAddrTd1').click()
+
+        detailInput = driver.find_element_by_id('rtAddrDetail')
+        detailInput.click()
+        detailInput.send_keys('##세부주소##')
+        #print(driver.page_source)
+
+        links = driver.find_elements_by_tag_name('a')
+        for link in links:
+            if link.text == '주소입력':
+                print('찾았음')
+                link.click()
+                break
+        driver.switch_to.window(driver.window_handles[0])
+        #print(driver.page_source)
+        title = dateText
+        innerText = '{} {}번째 페이지 입니다\n'.format(dateText, index+1)
+        if index==N-1:
+            innerText += contents[index*1150:]
+        else:
+            innerText += contents[index*1150:(index+1)*1150]
+        driver.find_element_by_id("senderName").send_keys('##본인이름##')
+        driver.find_element_by_id("relationship").send_keys('##관계##')
+        driver.find_element_by_id("title").send_keys(dateText)
+        driver.find_element_by_id("contents").send_keys(innerText)
+        driver.find_element_by_id("password").send_keys(pwd)
+        #print(driver.find_element_by_class_name('submit'))
+        submit = driver.find_element_by_class_name('submit')
+        submit.click()
+        time.sleep(5)
+        #print(driver.page_source)
+        driver.quit()
+
