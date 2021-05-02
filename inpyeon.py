@@ -127,7 +127,7 @@ for i in range(N):
     driver.switch_to.window(driver.window_handles[0])
     #print(driver.page_source)
     title = dateText
-    innerText = '{} {}번째 페이지 입니다\n'.format(dateText, i+1)
+    innerText = '{}번째 페이지 입니다\n'.format(i+1)
     if i==N-1:
         innerText += contents[i*1150:]
     else:
@@ -189,7 +189,7 @@ while len(notFoundIndex) > 0:
         driver.switch_to.window(driver.window_handles[0])
         #print(driver.page_source)
         title = dateText
-        innerText = '{} {}번째 페이지 입니다\n'.format(dateText, index+1)
+        innerText = '{}번째 페이지 입니다\n'.format(index+1)
         if index==N-1:
             innerText += contents[index*1150:]
         else:
