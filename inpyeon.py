@@ -78,7 +78,7 @@ dateText = datetime.today().strftime("%Y년 %m월 %d일자 기사")
 
 #구글 뉴스탭 지난 1일 처음 페이지 기사 출력
 # N개 만큼 게시글이 등록됨 
-for i in range(3,N):
+for i in range(N):
     driver = webdriver.Chrome(options=options)
     driver.get(URL)
     print(driver.title)
@@ -99,12 +99,12 @@ for i in range(3,N):
     
     #이 부분은 자신이 직접 해봐야함 본인의 주소를 입력해서 검색한 결과에
     #어떤 주소를 쓸지 생각 (사실 주소는 그렇게 의미는 없는 듯?)
-    searchInput.send_keys('본인의 주소')
+    searchInput.send_keys('##본인의 주소##')
     searchInput.send_keys(Keys.RETURN)
     driver.find_element_by_id('roadAddrTd1').click()
     detailInput = driver.find_element_by_id('rtAddrDetail')
     detailInput.click()
-    detailInput.send_keys('상세주소')
+    detailInput.send_keys('##상세주소##')
     #print(driver.page_source)
 
     links = driver.find_elements_by_tag_name('a')
@@ -122,8 +122,8 @@ for i in range(3,N):
         innerText = contents[i*1150:]
     else:
         innerText = contents[i*1150:(i+1)*1150]
-    driver.find_element_by_id("senderName").send_keys('나승호')
-    driver.find_element_by_id("relationship").send_keys('지인')
+    driver.find_element_by_id("senderName").send_keys('##본인의 이름##')
+    driver.find_element_by_id("relationship").send_keys('##지인##')
     driver.find_element_by_id("title").send_keys(dateText)
     driver.find_element_by_id("contents").send_keys(innerText)
     driver.find_element_by_id("password").send_keys('1111')
