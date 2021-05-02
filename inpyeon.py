@@ -97,8 +97,8 @@ for i in range(N):
     #driver.find_element_by_class_name('popSearchInput')
     #print(searchInput)
     
-    #이 부분은 자신이 직접 해봐야함 본인의 주소를 입력해서 검색한 결과에
-    #어떤 주소를 쓸지 생각 (사실 주소는 그렇게 의미는 없는 듯?)
+    #이 부분은 자신이 직접 해봐야함 본인의 주소를 입력해서 검색한 결과창에서
+    #주소를 찾아서 클릭해야됨(사실 주소는 그렇게 의미는 없는 듯?)
     searchInput.send_keys('##본인의 주소##')
     searchInput.send_keys(Keys.RETURN)
     driver.find_element_by_id('roadAddrTd1').click()
