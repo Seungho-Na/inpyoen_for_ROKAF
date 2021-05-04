@@ -5,8 +5,8 @@ from bs4 import BeautifulSoup
 from datetime import datetime
 import time
 import requests
-#import time
-URL = '##인편 보내려는 게시판 url##'
+#인편 보내려는 게시판 url 기본값: 기본군사훈련단
+URL = 'https://www.airforce.mil.kr/user/indexSub.action?codyMenuSeq=156893223&siteId=last2&menuUIType=top'
 options = Options()
 options.add_argument('headless')
 options.add_argument('disable-gpu')
@@ -107,6 +107,7 @@ for i in range(N):
             continue
     
     #print(searchInput)
+    #주소 찾는 팝업창에서 본인 집주소를 찾아야 되는데 아무 주소나 잡아도 크게 상관 없을 
     searchInput.send_keys('##본인집주소##')
     searchInput.send_keys(Keys.RETURN)
 
@@ -140,7 +141,7 @@ for i in range(N):
     #print(driver.find_element_by_class_name('submit'))
     submit = driver.find_element_by_class_name('submit')
     submit.click()
-    time.sleep(5)
+    time.sleep(3)
     #print(driver.page_source) 
     driver.quit()
     
@@ -202,7 +203,7 @@ while len(notFoundIndex) > 0:
         #print(driver.find_element_by_class_name('submit'))
         submit = driver.find_element_by_class_name('submit')
         submit.click()
-        time.sleep(5)
+        time.sleep(3)
         #print(driver.page_source)
         driver.quit()
 
