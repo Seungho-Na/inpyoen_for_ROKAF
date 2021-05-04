@@ -5,8 +5,7 @@ from bs4 import BeautifulSoup
 from datetime import datetime
 import time
 import requests
-#인편 보내려는 게시판 url 기본값: 기본군사훈련단
-URL = 'https://www.airforce.mil.kr/user/indexSub.action?codyMenuSeq=156893223&siteId=last2&menuUIType=top'
+URL = '##훈련병에게 인편 쓰는 게시판 url##'
 options = Options()
 options.add_argument('headless')
 options.add_argument('disable-gpu')
